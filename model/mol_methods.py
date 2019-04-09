@@ -19,6 +19,7 @@ import csv
 import numpy as np
 from rdkit.Chem import AllChem as Chem
 from rdkit.Chem import MolFromSmiles, MolToSmiles
+import pybel
 
 """ DATA I/O """
 
@@ -260,8 +261,13 @@ def verified_and_below(smile, max_len):
 def verify_sequence(smile):
     """Returns True if the SMILES string is valid and
     its length is less than max_len."""
-    mol = Chem.MolFromSmiles(smile)
-    return smile != '' and mol is not None and mol.GetNumAtoms() > 1
+    try:
+        pybel.readstring('smi', smile)
+        return True
+    except:
+        return False
+    #mol = Chem.MolFromSmiles(smile)
+    #return smile != '' and mol is not None and mol.GetNumAtoms() > 1
 
 def apply_to_valid(smile, fun, **kwargs):
     """Returns fun(smile, **kwargs) if smiles is a valid
